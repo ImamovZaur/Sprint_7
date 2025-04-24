@@ -8,10 +8,12 @@ from urls import Urls
 class TestCreateCourier:
     @allure.title('Тест создания курьера')
     @allure.description('Проверка создания курьера')
-    def test_create_courier_account_created(self):
-        courier = register_new_courier_and_return_login_password()
+    def test_create_courier_account_created(self, delete_courier):
+        courier = register_new_courier_with_static_data()
         response = requests.post(Urls.CREATE_COURIER_URL, data=courier)
         assert response.status_code == 201 and response.json() == {'ok': True}
+        courier_delete = delete_courier
+        assert courier_delete['status'] == 200 and courier_delete['text'] == {'ok': True}
 
     @allure.title('Создание существующего курьера')
     def test_create_duplicate_courier(self):
